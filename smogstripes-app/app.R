@@ -1,15 +1,12 @@
 # Install and load required packages
-if (!require("shiny")) install.packages("shiny")
-if (!require("plotly")) install.packages("plotly")
-if (!require("tidyr")) install.packages("tidyr")
-if (!require("broom")) install.packages("broom")
-if (!require("ggtext")) install.packages("ggtext")
-
 library(shiny)
 library(plotly)
 library(tidyr)
 library(broom)
 library(ggtext)
+library(readr)
+library(stringr)
+library(dplyr)
 
 df_plot_1 <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_w_aqg.csv') %>% 
   pivot_longer(cols = c('who_2021', 'who_2005'), names_to = 'who_year', values_to = 'who_val')%>%
@@ -31,7 +28,8 @@ df_plot_long <- df_plot_1 %>% left_join(df_plot_2, by = c('uesi_id'))%>%
                                     "Exceeding All Recommended Guidelines & Targets")))%>%
   mutate(trend = case_when(estimate > 0 & p.value < 0.05 ~ paste0(city, "(<span style='color: red;'>&#x25B2;</span>)"),
                            estimate < 0 & p.value < 0.05 ~ paste0(city, "(<span style='color: green;'>&#x25BC;</span>)"),
-                           p.value > 0.05 ~ paste0(city, "(<span style='color: orange;'>&#x25C0;&#x25B6;</span>)")))
+                           p.value > 0.05 ~ paste0(city, "(<span style='color: orange;'>&#x25C0;&#x25B6;</span>)")))%>%
+  write_csv("Data/data_shiny.csv")
 
 
 who_palette_2021 <- c("Within Recommended Value of 5µg/m^3"= "#00E400", 
