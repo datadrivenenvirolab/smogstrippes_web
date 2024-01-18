@@ -1,10 +1,15 @@
 # Install and load required packages
+webr::install("shiny")
+webr::install("plotly")
+webr::install("ggtext")
+webr::install("readr")
+webr::install("bslib")
+
 library(shiny)
 library(plotly)
 library(ggtext)
 library(readr)
 library(bslib)
-library(gridlayout)
 
 df_plot_long <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny_min.csv')
 dput(df_plot_long)
