@@ -6,7 +6,7 @@ library(readr)
 library(bslib)
 library(gridlayout)
 
-df_plot_long <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny_min.csv')
+df_plot_long <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny.csv')
 dput(df_plot_long)
 
 who_palette_2021 <- c("Within Recommended Value of 5µg/m^3"= "#00E400", 

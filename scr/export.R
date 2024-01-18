@@ -1,4 +1,4 @@
 library(shinylive)
 shinylive::export(appdir = "smogstripes-appv2", destdir = "docs")
+httpuv::runStaticServer("docs/", port=8008)
 
-shinyuieditor::launch_editor(app_loc = "smogstripes-appv2/")

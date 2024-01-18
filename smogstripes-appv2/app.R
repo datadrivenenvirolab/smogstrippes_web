@@ -1,9 +1,9 @@
 # Install and load required packages
-webr::install("shiny")
-webr::install("plotly")
-webr::install("ggtext")
-webr::install("readr")
-webr::install("bslib")
+# webr::install("shiny")
+# webr::install("plotly")
+# webr::install("ggtext")
+# webr::install("readr")
+# webr::install("bslib")
 
 library(shiny)
 library(plotly)
@@ -11,8 +11,7 @@ library(ggtext)
 library(readr)
 library(bslib)
 
-df_plot_long <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny_min.csv')
-dput(df_plot_long)
+df_plot_long <- read.csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny.csv')
 
 who_palette_2021 <- c("Within Recommended Value of 5µg/m^3"= "#00E400", 
                       "Within WHO Interim Target 4 of 10µg/m^3" = "#FB6A4A", 
@@ -33,7 +32,7 @@ ui <- page_navbar(
   collapsible = TRUE,
   theme = bslib::bs_theme(),
   sidebar = sidebar(
-    title = "Sidebar Title",
+    title = "City Selection",
     radioButtons(
       choices = unique(df_plot_long$who_year),
       selected = unique(df_plot_long$who_year)[1],
