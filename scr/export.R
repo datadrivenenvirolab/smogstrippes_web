@@ -1,2 +1,2 @@
 library(shinylive)
-export(appdir = "smogstripes-app", destdir = "smogstripes-web")
+shinylive::export(appdir = "smogstripes-app", destdir = "docs")
