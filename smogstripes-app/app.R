@@ -1,6 +1,9 @@
 # Install and load required packages
 if (!require("shiny")) install.packages("shiny")
 if (!require("plotly")) install.packages("plotly")
+if (!require("tidyr")) install.packages("tidyr")
+if (!require("broom")) install.packages("broom")
+if (!require("ggtext")) install.packages("ggtext")
 
 library(shiny)
 library(plotly)
@@ -8,7 +11,7 @@ library(tidyr)
 library(broom)
 library(ggtext)
 
-df_plot_1 <- read_csv('Data/data_w_aqg.csv') %>% 
+df_plot_1 <- read_csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_w_aqg.csv') %>% 
   pivot_longer(cols = c('who_2021', 'who_2005'), names_to = 'who_year', values_to = 'who_val')%>%
   mutate(who_year = str_replace(who_year, 'who_', ''))
 
