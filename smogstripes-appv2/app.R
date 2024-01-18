@@ -27,58 +27,23 @@ ui <- page_navbar(
   selected = "Smogstripes",
   collapsible = TRUE,
   theme = bslib::bs_theme(),
-  nav_panel(
-    title = "Smogstripes",
-    grid_container(
-      layout = c(
-        "area0"
-      ),
-      row_sizes = c(
-        "1fr"
-      ),
-      col_sizes = c(
-        "1fr"
-      ),
-      gap_size = "10px",
-      grid_card(
-        area = "area0",
-        card_body(plotlyOutput(outputId = "main_plot"))
-      )
-    )
+  sidebar = sidebar(
+    title = "Sidebar Title",
+    radioButtons(
+      choices = unique(df_plot_long$who_year),
+      selected = unique(df_plot_long$who_year)[1],
+      width = "100%",
+      inputId = "who_select",
+      label = "Select WHO Standard:"
+    ),
+    selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
+                                       multiple = TRUE,
+                                       options = list(maxItems = 6),
+                                       selected = df_plot_long$city %>% unique() %>% sample(12))
   ),
   nav_panel(
-    title = "Parameters",
-    grid_container(
-      layout = c(
-        "facetOption",
-        "facetOption"
-      ),
-      row_sizes = c(
-        "370px",
-        "1fr"
-      ),
-      col_sizes = c(
-        "1fr"
-      ),
-      gap_size = "10px",
-      grid_card(
-        area = "facetOption",
-        card_header("Selection for visualization"),
-        card_body(
-          radioButtons(
-            choices = unique(df_plot_long$who_year),
-            selected = unique(df_plot_long$who_year)[1],
-            width = "100%",
-            inputId = "who_select",
-            label = "Select WHO Standard:"
-          ),
-          selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
-                                   multiple = TRUE,
-                                   options = list(maxItems = 6),
-                                   selected = df_plot_long$city %>% unique() %>% sample(12))
-        )
-      )
-    )
+    title = "Smogstripes",
+    plotlyOutput(outputId = "main_plot")
   )
 )
 
