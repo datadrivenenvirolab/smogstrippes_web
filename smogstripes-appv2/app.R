@@ -13,6 +13,15 @@ library(bslib)
 
 df_plot_long <- read.csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny.csv')
 
+df_plot_long$who_val <-   factor(df_plot_long$who_val,
+                                                  levels = c ("Within Recommended Value of 5µg/m^3",
+                                                              "Within Recommended Value of 10µg/m^3",
+                                                              "Within WHO Interim Target 4 of 10µg/m^3",
+                                                              "Within WHO Interim Target 3 of 15µg/m^3",
+                                                              "Within WHO Interim Target 2 of 25µg/m^3",
+                                                              "Within WHO Interim Target 1 of 35µg/m^3",
+                                                              "Exceeding All Recommended Guidelines & Targets"))
+
 who_palette_2021 <- c("Within Recommended Value of 5µg/m^3"= "#00E400", 
                       "Within WHO Interim Target 4 of 10µg/m^3" = "#FB6A4A", 
                       "Within WHO Interim Target 3 of 15µg/m^3"="#EF3B2C", 
@@ -32,7 +41,7 @@ ui <- page_navbar(
   collapsible = TRUE,
   theme = bslib::bs_theme(),
   sidebar = sidebar(
-    title = "City Selection",
+    title = "",
     radioButtons(
       choices = unique(df_plot_long$who_year),
       selected = unique(df_plot_long$who_year)[1],
@@ -91,7 +100,7 @@ server <- function(input, output) {
       # layout(title = list(text = paste0("1998-2022 AIR QUALITY BY WHO GUIDELINES (", unique(filtered_data$who_year),")") ,
       #                     x = 0, y = 1,
       #                     pad = list(b = 60, l = 0, r = 0 )))
-    
+    p <- layout(p, legend = list(orientation = 'h'))
     p
   })
 }
