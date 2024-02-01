@@ -39,6 +39,8 @@ who_palette_2005 <- c("Within Recommended Value of 10µg/m^3" = "#00E400",
 ui <- page_navbar(
   selected = "Smogstripes",
   collapsible = TRUE,
+  window_title = "Smogstripes",
+  lang  = "en",
   theme = bslib::bs_theme(),
   sidebar = sidebar(
     title = "",
