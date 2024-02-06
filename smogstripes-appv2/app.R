@@ -44,12 +44,13 @@ ui <- page_navbar(
   theme = bslib::bs_theme(),
   sidebar = sidebar(
     title = "",
+    open = "closed",
     radioButtons(
       choices = unique(df_plot_long$who_year),
       selected = unique(df_plot_long$who_year)[1],
       width = "100%",
       inputId = "who_select",
-      label = "Select WHO Standard:"
+      label = "Select WHO Standard:",
     ),
     selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
                                        multiple = TRUE,
