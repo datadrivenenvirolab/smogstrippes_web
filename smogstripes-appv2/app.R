@@ -50,7 +50,7 @@ ui <- page_navbar(
       selected = unique(df_plot_long$who_year)[1],
       width = "100%",
       inputId = "who_select",
-      label = "Select WHO Standard:",
+      label = "Select WHO Standard:"
     ),
     selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
                                        multiple = TRUE,
@@ -110,3 +110,4 @@ server <- function(input, output) {
 
 # Run the app
 shinyApp(ui, server)
+
