@@ -11,60 +11,48 @@ library(ggtext)
 library(readr)
 library(bslib)
 
-df_plot_long <- read.csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny.csv')
+df_plot_long <- read.csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny_daily.csv')
+df_plot_long$City = df_plot_long$city
+df_plot_long$who_2021 <-   factor(df_plot_long$who_2021,
+                                 levels = c ("Below Recommended Value of 5µg/m^3", # 0-5
+                                             "5-10µg/m^3 (1st WHO Interim Target)", 
+                                             "10-15µg/m^3 (2nd WHO Interim Target)",
+                                             "Within 3rd Interim Target of 25µg/m^3", 
+                                             "Within 4th Interim Target of 35µg/m^3",
+                                             "Exceeding All Recommended Guidelines"))
 
-df_plot_long$who_val <-   factor(df_plot_long$who_val,
-                                                  levels = c ("Within Recommended Value of 5µg/m^3",
-                                                              "Within Recommended Value of 10µg/m^3",
-                                                              "Within WHO Interim Target 4 of 10µg/m^3",
-                                                              "Within WHO Interim Target 3 of 15µg/m^3",
-                                                              "Within WHO Interim Target 2 of 25µg/m^3",
-                                                              "Within WHO Interim Target 1 of 35µg/m^3",
-                                                              "Exceeding All Recommended Guidelines & Targets"))
-
-who_palette_2021 <- c("Within Recommended Value of 5µg/m^3"= "#00E400", 
-                      "Within WHO Interim Target 4 of 10µg/m^3" = "#FB6A4A", 
-                      "Within WHO Interim Target 3 of 15µg/m^3"="#EF3B2C", 
-                      "Within WHO Interim Target 2 of 25µg/m^3" = "#CB181D", 
-                      "Within WHO Interim Target 1 of 35µg/m^3" = "#A50F15", 
-                      "Exceeding All Recommended Guidelines & Targets" = "#67000D")
-who_palette_2005 <- c("Within Recommended Value of 10µg/m^3" = "#00E400",            
-                      "Within WHO Interim Target 3 of 15µg/m^3" = "#EF3B2C", 
-                      "Within WHO Interim Target 2 of 25µg/m^3" = "#CB181D", 
-                      "Within WHO Interim Target 1 of 35µg/m^3" = "#A50F15", 
-                      "Exceeding All Recommended Guidelines & Targets" ="#67000D")
-
+who_palette_2021 <- c("Below Recommended Value of 5µg/m^3"= "#00E400", 
+                      "5-10µg/m^3 (1st WHO Interim Target)" = "#FB6A4A", 
+                      "10-15µg/m^3 (2nd WHO Interim Target)"="#EF3B2C", 
+                      "Within 3rd Interim Target of 25µg/m^3" = "#CB181D", 
+                      "Within 4th Interim Target of 35µg/m^3" = "#A50F15", 
+                      "Exceeding All Recommended Guidelines" = "#67000D")
 
 # UI
 ui <- page_navbar(
-  selected = "Smogstripes",
+  selected = "Daily Smogstripes",
   collapsible = TRUE,
-  window_title = "Smogstripes",
+  window_title = "Daily Smogstripes",
   lang  = "en",
   theme = bslib::bs_theme(),
   sidebar = sidebar(
     title = "",
     open = "closed",
     dateRangeInput('dateRange',
-                   label = 'Date range input: yyyy-mm-dd',
-                   start = Sys.Date() - 5, 
-                   end = Sys.Date() + 5,
-                   format = "yyyy"
-    ),
-    radioButtons(
-      choices = unique(df_plot_long$who_year),
-      selected = unique(df_plot_long$who_year)[1],
-      width = "100%",
-      inputId = "who_select",
-      label = "Select WHO Standard:"
+                   label = 'Date range input:',
+                   start = Sys.Date() - 90, 
+                   end = "2024-05-01",
+                   format = "yyyy-mm-dd",
+                   min = min(df_plot_long$date),
+                   max = max(df_plot_long$date)
     ),
     selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
                                        multiple = TRUE,
-                                       options = list(maxItems = 6),
-                                       selected = df_plot_long$city %>% unique() %>% sample(12))
+                                       options = list(maxItems = 2),
+                                       selected = df_plot_long$city %>% unique() %>% sample(2))
   ),
   nav_panel(
-    title = "Smogstripes",
+    title = "Daily Smogstripes",
     plotlyOutput(outputId = "main_plot")
   )
 )
@@ -73,17 +61,17 @@ ui <- page_navbar(
 # Server
 server <- function(input, output) {
   output$main_plot <- renderPlotly({
-    filtered_data <- df_plot_long[df_plot_long$city %in% input$cities_select & df_plot_long$who_year == input$who_select & df_plot_long$year > input$dateRange[1], ]
+    filtered_data <- df_plot_long[df_plot_long$city %in% input$cities_select & df_plot_long$date > input$dateRange[1] & df_plot_long$date < input$dateRange[2], ]
     
     # Your ggplot code
     aq_stripe <- ggplot(filtered_data,
-                        aes(x = year, y = 1, fill = who_val))+ 
+                        aes(x = date, y = 1, fill = who_2021, label=pm25))+ 
       geom_tile() +
       scale_y_continuous(expand = c(0, 0)) +
-      scale_fill_manual(values = get(paste0('who_palette_', unique(filtered_data$who_year)))) +
+      scale_fill_manual(values = get(paste0('who_palette_2021'))) +
       guides(fill = guide_colorbar(barwidth = 1))+
-      guides(fill = guide_legend(title = paste0("WHO Guidelines (", unique(filtered_data$who_year),")"))) +
-      labs(title = paste0("1998-2022 AIR QUALITY BY WHO GUIDELINES (", unique(filtered_data$who_year),")"))+
+      guides(fill = guide_legend(title = paste0("WHO Guidelines 2021"))) +
+      labs(title = paste0("Daily PM25 Concentration between ",input$dateRange[1], " to ", input$dateRange[2]))+
       theme_minimal() +
       theme(axis.text.y = element_blank(),
             axis.line.y = element_blank(),
@@ -102,7 +90,7 @@ server <- function(input, output) {
             strip.text = ggtext::element_markdown(),
             strip.text.x = element_text(size=11, face="bold")
       )+# Adjust theme as needed
-      facet_wrap(~trend)
+      facet_wrap(~City, ncol = 1)
     
     # Convert ggplot object to plotly
     p <- ggplotly(aq_stripe, tooltip= "all")
