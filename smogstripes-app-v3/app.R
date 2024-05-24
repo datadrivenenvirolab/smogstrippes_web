@@ -45,6 +45,12 @@ ui <- page_navbar(
   sidebar = sidebar(
     title = "",
     open = "closed",
+    dateRangeInput('dateRange',
+                   label = 'Date range input: yyyy-mm-dd',
+                   start = Sys.Date() - 5, 
+                   end = Sys.Date() + 5,
+                   format = "yyyy"
+    ),
     radioButtons(
       choices = unique(df_plot_long$who_year),
       selected = unique(df_plot_long$who_year)[1],
@@ -67,7 +73,7 @@ ui <- page_navbar(
 # Server
 server <- function(input, output) {
   output$main_plot <- renderPlotly({
-    filtered_data <- df_plot_long[df_plot_long$city %in% input$cities_select & df_plot_long$who_year == input$who_select, ]
+    filtered_data <- df_plot_long[df_plot_long$city %in% input$cities_select & df_plot_long$who_year == input$who_select & df_plot_long$year > input$dateRange[1], ]
     
     # Your ggplot code
     aq_stripe <- ggplot(filtered_data,
