@@ -43,20 +43,20 @@ Concentration_palette <- c("< 12.2 ppm"="#dad085",
 
 
 df_plot_long$Anomaly <- factor(df_plot_long$Anomaly,
-                               levels = c("-2 - -0.5",
-                                          "-0.5 - 0",
-                                          "0 - 0.5", 
-                                          "0.5 - 2",
-                                          ">2"))
+                               levels = c("-2sd to -0.5sd",
+                                          "-0.5sd to 0sd",
+                                          "0sd to 0.5sd", 
+                                          "0.5sd to 2sd",
+                                          ">2sd"))
 
-Anomaly_palette <- c("-2 - -0.5" = "#1a68ae",
-                     "-0.5 - 0" = "#c1d9ed",
-                     "0 - 0.5" = "#fcbda4", 
-                     "0.5 - 2" = "#fb6a4a",
-                     ">2" = "#69000d"
+Anomaly_palette <- c("-2sd to -0.5sd" = "#c1d9ed",
+                     "-0.5sd to 0sd" = "#fee0d2",
+                     "0sd to 0.5sd" = "#fb6a4a", 
+                     "0.5sd to 2sd" = "#f2503e",
+                     ">2sd" = "#69000d"
                      )
 
-# UI
+# UI"
 ui <- page_navbar(
   selected = "Daily Smogstripes",
   collapsible = TRUE,
