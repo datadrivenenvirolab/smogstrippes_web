@@ -29,17 +29,17 @@ WHO_palette <- c("Below Recommended Value of 5µg/m^3"= "#00E400",
                       "Exceeding All Recommended Guidelines" = "#67000D")
 
 df_plot_long$Concentration <- factor(df_plot_long$Concentration,
-                                     levels = c("< 7 ppm",
-                                                "7 ppm - 35 ppm",
-                                                "35 ppm - 47 ppm",
-                                                "47 ppm - 73.4 ppm",
-                                                ">73.4 ppm"))
+                                     levels = c("< 7 µg/m^3",
+                                                "7 µg/m^3 - 35 µg/m^3",
+                                                "35 µg/m^3 - 47 µg/m^3",
+                                                "47 µg/m^3 - 73.4 µg/m^3",
+                                                ">73.4 µg/m^3"))
 
-Concentration_palette <- c("< 7 ppm"="#dad085",
-                           "7 ppm - 35 ppm" = "#ebcc7b",
-                           "35 ppm - 47 ppm"="#e19947",
-                           "47 ppm - 73.4 ppm"="#c24221",
-                           ">73.4 ppm" = "#99082b")
+Concentration_palette <- c("< 7 µg/m^3"="#dad085",
+                           "7 µg/m^3 - 35 µg/m^3" = "#ebcc7b",
+                           "35 µg/m^3 - 47 µg/m^3"="#e19947",
+                           "47 µg/m^3 - 73.4 µg/m^3"="#c24221",
+                           ">73.4 µg/m^3" = "#99082b")
 
 
 df_plot_long$Anomaly <- factor(df_plot_long$Anomaly,
