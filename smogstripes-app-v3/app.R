@@ -13,7 +13,7 @@ library(bslib)
 
 df_plot_long <- read.csv('https://raw.githubusercontent.com/datadrivenenvirolab/smogstrippes_web/main/data/data_shiny_daily.csv')
 df_plot_long$City = df_plot_long$city
-df_plot_long$who_2021 <-   factor(df_plot_long$who_2021,
+df_plot_long$WHO <-   factor(df_plot_long$WHO,
                                  levels = c ("Below Recommended Value of 5µg/m^3", # 0-5
                                              "5-10µg/m^3 (1st WHO Interim Target)", 
                                              "10-15µg/m^3 (2nd WHO Interim Target)",
@@ -21,12 +21,40 @@ df_plot_long$who_2021 <-   factor(df_plot_long$who_2021,
                                              "Within 4th Interim Target of 35µg/m^3",
                                              "Exceeding All Recommended Guidelines"))
 
-who_palette_2021 <- c("Below Recommended Value of 5µg/m^3"= "#00E400", 
+WHO_palette <- c("Below Recommended Value of 5µg/m^3"= "#00E400", 
                       "5-10µg/m^3 (1st WHO Interim Target)" = "#FB6A4A", 
                       "10-15µg/m^3 (2nd WHO Interim Target)"="#EF3B2C", 
                       "Within 3rd Interim Target of 25µg/m^3" = "#CB181D", 
                       "Within 4th Interim Target of 35µg/m^3" = "#A50F15", 
                       "Exceeding All Recommended Guidelines" = "#67000D")
+
+df_plot_long$Concentration <- factor(df_plot_long$Concentration,
+                                     levels = c("< 12.2 ppm",
+                                                "12.2 ppm - 43 ppm",
+                                                "43 ppm - 59.4 ppm",
+                                                "59.4 ppm - 103.4 ppm",
+                                                ">103.4 ppm"))
+
+Concentration_palette <- c("< 12.2 ppm"="#dad085",
+                           "12.2 ppm - 43 ppm" = "#ebcc7b",
+                           "43 ppm - 59.4 ppm"="#e19947",
+                           "59.4 ppm - 103.4 ppm"="#c24221",
+                           ">103.4 ppm" = "#99082b")
+
+
+df_plot_long$Anomaly <- factor(df_plot_long$Anomaly,
+                               levels = c("-2 - -0.5",
+                                          "-0.5 - 0",
+                                          "0 - 0.5", 
+                                          "0.5 - 2",
+                                          ">2"))
+
+Anomaly_palette <- c("-2 - -0.5" = "#1a68ae",
+                     "-0.5 - 0" = "#c1d9ed",
+                     "0 - 0.5" = "#fcbda4", 
+                     "0.5 - 2" = "#fb6a4a",
+                     ">2" = "#69000d"
+                     )
 
 # UI
 ui <- page_navbar(
@@ -49,7 +77,15 @@ ui <- page_navbar(
     selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
                                        multiple = TRUE,
                                        options = list(maxItems = 2),
-                                       selected = df_plot_long$city %>% unique() %>% sample(2))
+                                       selected = df_plot_long$city %>% unique() %>% sample(2)
+    ),
+    radioButtons(
+      choices = c('WHO', 'Anomaly', 'Concentration'),
+      selected = 'WHO',
+      width = "100%",
+      inputId = "scale_select",
+      label = "Select Graph Scale"
+    )
   ),
   nav_panel(
     title = "Daily Smogstripes",
@@ -65,12 +101,12 @@ server <- function(input, output) {
     
     # Your ggplot code
     aq_stripe <- ggplot(filtered_data,
-                        aes(x = date, y = 1, fill = who_2021, label=pm25))+ 
+                        aes(x = date, y = 1, fill = get(input$scale_select), label=pm25))+ 
       geom_tile() +
       scale_y_continuous(expand = c(0, 0)) +
-      scale_fill_manual(values = get(paste0('who_palette_2021'))) +
+      scale_fill_manual(values = get(paste0(input$scale_select,'_palette'))) +
       guides(fill = guide_colorbar(barwidth = 1))+
-      guides(fill = guide_legend(title = paste0("WHO Guidelines 2021"))) +
+      guides(fill = guide_legend(title = paste0(input$scale_select))) +
       labs(title = paste0("Daily PM25 Concentration between ",input$dateRange[1], " to ", input$dateRange[2]))+
       theme_minimal() +
       theme(axis.text.y = element_blank(),
