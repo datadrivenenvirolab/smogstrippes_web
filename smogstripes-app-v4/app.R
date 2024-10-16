@@ -76,7 +76,7 @@ ui <- page_navbar(
     selectizeInput("cities_select", "Select Cities:", choices = unique(df_plot_long$city), 
                                        multiple = TRUE,
                                        options = list(maxItems = 2),
-                                       selected = df_plot_long$city %>% unique() %>% sample(1)
+                                       selected = df_plot_long[df_plot_long$date >= as.Date("2023-01-01") & df_plot_long$date <= as.Date("2024-01-01"), "city"] %>% unique() %>% sample(1)
     ),
     radioButtons(
       choices = c('WHO', 'Anomaly', 'Concentration'),
